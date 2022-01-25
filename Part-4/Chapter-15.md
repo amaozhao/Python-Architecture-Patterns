@@ -61,7 +61,7 @@
 
 目视检查代码并试图推断问题和错误所在通常是不够的。就其执行方式而言，即使是非常简单的代码也会让你大吃一惊。能够分析在特定情况下如何精确执行代码对于分析和修复发现的问题至关重要。
 
-## 生产考察
+## 生产分析
 
 一旦我们意识到我们在生产中存在问题，我们就需要了解正在发生的事情以及产生问题的关键要素是什么。
 
@@ -147,7 +147,11 @@ from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from .models import Micropost, Usr
 from .serializers import MicropostSerializer
 import logging
+
+
 logger = logging.getLogger(__name__)
+
+
 class MicropostsListView(ListCreateAPIView):
     serializer_class = MicropostSerializer
     def get_queryset(self):
@@ -158,6 +162,8 @@ class MicropostsListView(ListCreateAPIView):
     def perform_create(self, serializer):
         user = Usr.objects.get(username=self.kwargs['username'])
         serializer.save(user=user)
+        
+        
 class MicropostView(RetrieveUpdateDestroyAPIView):
     serializer_class = MicropostSerializer
     def get_queryset(self):
@@ -358,7 +364,7 @@ session.get('http://nextservice/url')
 在进行调试时，有一些通用的想法可能非常有用：
 
 - 分而治之。采取小步骤并隔离代码区域，以便简化代码并使其易于理解。与了解代码中何时出现问题一样重要的是检测何时没有问题，以便我们可以将注意力集中在相关位上。
-    
+  
     > Edward J. Gauss 在 1982 年的一篇文章中描述了这种方法，他称之为“狼围栏算法”：
     > 阿拉斯加有一只狼；你是怎么找到它的？首先在该州的中部建一个栅栏，等待狼嚎叫，确定它在栅栏的哪一侧。只在那一侧重复这个过程，直到你可以看到狼。
     
@@ -589,6 +595,8 @@ def valid(candidate):
         if candidate / lower == candidate // lower:
             return False
     return True
+
+
 assert not valid(1)
 assert valid(3)
 assert not valid(15)
